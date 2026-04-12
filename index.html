@@ -223,11 +223,15 @@
 
         /* ── Responsive ── */
         @media (max-width: 600px) {
-            header { padding: 24px; }
-            .hero { padding: 80px 24px 48px; }
-            main { padding: 0 24px 80px; }
-            #contact { padding: 60px 24px; }
-            footer { padding: 24px; flex-direction: column; gap: 14px; align-items: flex-start; }
+            header { padding: 20px 24px; }
+            .header-nav { gap: 20px; }
+            .header-nav a:first-child { display: none; }
+            .hero { padding: 68px 20px 36px; }
+            main { padding: 0 20px 64px; }
+            .project-link { padding: 15px 0; }
+            #contact { padding: 48px 20px; max-width: 100%; }
+            input, textarea { font-size: 16px; } /* hindrer iOS auto-zoom */
+            footer { padding: 20px 24px; flex-direction: column; gap: 12px; align-items: flex-start; }
             #preview { display: none; }
         }
     </style>
