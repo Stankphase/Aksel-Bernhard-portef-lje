@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inge Bremnes — Aksel Bernhard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; }
+        body {
+            background: #f8f6f3;
+            font-family: 'Albert Sans', sans-serif;
+            font-weight: 300;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            z-index: 10;
+            padding: 32px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .back {
+            font-size: 10px;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: #b0ab9e;
+            text-decoration: none;
+            transition: color 0.25s;
+        }
+        .back:hover { color: #111; }
+        .series-info { text-align: right; }
+        .series-title {
+            font-family: 'Albert Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 300;
+            font-style: italic;
+            color: #111;
+            letter-spacing: 0.04em;
+            display: block;
+        }
+        .series-counter {
+            font-size: 10px;
+            letter-spacing: 0.18em;
+            color: #c8c4bc;
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* ── Viewer ── */
+        .viewer {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 88px 48px 64px;
+        }
+        .viewer img {
+            max-width: 90%;
+            max-height: 72vh;
+            object-fit: contain;
+            display: block;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+        .viewer img.loaded { opacity: 1; }
+
+        /* Click zones — invisible, cursor hints navigation direction */
+        .zone {
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 50%;
+            z-index: 5;
+        }
+        .zone.prev { left: 0; cursor: w-resize; }
+        .zone.next { right: 0; cursor: e-resize; }
+
+        @media (max-width: 560px) {
+            header { padding: 24px; }
+            .viewer { padding: 80px 16px 48px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="back">← Alle serier</a>
+        <div class="series-info">
+            <span class="series-title">Inge Bremnes</span>
+            <span class="series-counter" id="counter"></span>
+        </div>
+    </header>
+
+    <div class="viewer">
+        <img id="img" src="" alt="">
+        <div class="zone prev" id="prev"></div>
+        <div class="zone next" id="next"></div>
+    </div>
+
+    <script>
+        const images = [
+            'bilder/inge bremnes/inge bremnes1.webp',
+            'bilder/inge bremnes/inge bremnes2.webp',
+            'bilder/inge bremnes/inge bremnes3.webp',
+            'bilder/inge bremnes/inge bremnes4.webp',
+        ];
+        const el      = document.getElementById('img');
+        const counter = document.getElementById('counter');
+        let   current = 0;
+
+        function show(idx) {
+            current = (idx + images.length) % images.length;
+            el.classList.remove('loaded');
+            const next = new Image();
+            next.src = images[current];
+            next.onload = () => { el.src = images[current]; el.classList.add('loaded'); };
+            counter.textContent = (current + 1) + ' — ' + images.length;
+        }
+
+        show(0);
+        document.getElementById('prev').addEventListener('click', () => show(current - 1));
+        document.getElementById('next').addEventListener('click', () => show(current + 1));
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft')  show(current - 1);
+            if (e.key === 'ArrowRight') show(current + 1);
+            if (e.key === 'Escape') location.href = 'index.html';
+        });
+        let tx = 0;
+        document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+        document.addEventListener('touchend', e => {
+            const d = tx - e.changedTouches[0].clientX;
+            if (Math.abs(d) > 50) show(d > 0 ? current + 1 : current - 1);
+        });
+    </script>
+</body>
+</html>

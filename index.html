@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aksel Bernhard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #f8f6f3;
+            color: #111;
+            font-family: 'Albert Sans', sans-serif;
+            font-weight: 300;
+            font-size: 13px;
+            letter-spacing: 0.03em;
+            line-height: 1.6;
+        }
+
+        /* ── Header ── */
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 20;
+            padding: 36px 56px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-family: 'Albert Sans', sans-serif;
+            font-weight: 300;
+            font-size: 11px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: #111;
+            text-decoration: none;
+        }
+        .header-nav { display: flex; gap: 36px; }
+        .header-nav a {
+            font-size: 10px;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: #b0ab9e;
+            text-decoration: none;
+            transition: color 0.25s;
+        }
+        .header-nav a:hover { color: #111; }
+
+        /* ── Hero ── */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 72px 72px;
+        }
+        .hero img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            display: block;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+        .hero img.loaded { opacity: 1; }
+
+        /* ── Project list ── */
+        main {
+            padding: 0 56px 100px;
+        }
+        .project-list { list-style: none; max-width: 640px; }
+        .project-item { border-top: 1px solid #e2ddd7; }
+        .project-item:last-child { border-bottom: 1px solid #e2ddd7; }
+
+        .project-link {
+            display: flex;
+            align-items: baseline;
+            padding: 18px 0;
+            text-decoration: none;
+        }
+        .project-name {
+            font-family: 'Albert Sans', sans-serif;
+            font-size: clamp(24px, 3vw, 37px);
+            font-weight: 300;
+            font-style: italic;
+            color: #111;
+            flex: 1;
+            line-height: 1.1;
+            transition: color 0.3s;
+        }
+        .project-link:hover .project-name { color: #b0ab9e; }
+        .project-count {
+            font-size: 10px;
+            letter-spacing: 0.18em;
+            color: #d0ccc4;
+            align-self: center;
+        }
+
+        /* ── Floating preview ── */
+        #preview {
+            position: fixed;
+            pointer-events: none;
+            z-index: 30;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        #preview.visible { opacity: 1; }
+        #preview img {
+            display: block;
+            width: 240px;
+            height: 300px;
+            object-fit: cover;
+            box-shadow: 0 16px 56px rgba(0,0,0,0.13);
+        }
+
+        /* ── Contact ── */
+        #contact {
+            padding: 80px 56px;
+            border-top: 1px solid #e2ddd7;
+            max-width: 576px;
+        }
+        .contact-label {
+            font-size: 9px;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+            color: #b0ab9e;
+            display: block;
+            margin-bottom: 22px;
+        }
+        .contact-heading {
+            font-family: 'Albert Sans', sans-serif;
+            font-size: clamp(26px, 3vw, 38px);
+            font-weight: 300;
+            font-style: italic;
+            color: #111;
+            line-height: 1.25;
+            margin-bottom: 14px;
+        }
+        .contact-body {
+            color: #8a8277;
+            font-size: 13px;
+            line-height: 1.75;
+            margin-bottom: 36px;
+        }
+        .contact-body a {
+            color: #8a8277;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            transition: color 0.25s;
+        }
+        .contact-body a:hover { color: #111; }
+        .contact-form { display: flex; flex-direction: column; gap: 26px; }
+        .form-field { display: flex; flex-direction: column; gap: 8px; }
+        label {
+            font-size: 9px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: #b0ab9e;
+        }
+        input, textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #dedad4;
+            color: #111;
+            font-family: 'Albert Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 300;
+            padding: 10px 0;
+            outline: none;
+            transition: border-color 0.3s;
+            width: 100%;
+            caret-color: #999;
+        }
+        input:focus, textarea:focus { border-bottom-color: #8a8277; }
+        textarea { resize: none; height: 96px; }
+        input::placeholder, textarea::placeholder { color: #d0cdc7; }
+        .submit-btn {
+            align-self: flex-start;
+            background: transparent;
+            border: 1px solid #d0cdc7;
+            color: #8a8277;
+            font-family: 'Albert Sans', sans-serif;
+            font-size: 9px;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            padding: 13px 36px;
+            cursor: pointer;
+            transition: border-color 0.3s, color 0.3s;
+        }
+        .submit-btn:hover { border-color: #8a8277; color: #111; }
+        .form-success {
+            display: none;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #b0ab9e;
+        }
+
+        /* ── Footer ── */
+        footer {
+            padding: 28px 56px;
+            border-top: 1px solid #e2ddd7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer-copy { font-size: 10px; letter-spacing: 0.1em; color: #ccc8c0; }
+        .footer-links { display: flex; gap: 28px; }
+        .footer-links a {
+            font-size: 10px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #ccc8c0;
+            text-decoration: none;
+            transition: color 0.25s;
+        }
+        .footer-links a:hover { color: #111; }
+
+        /* ── Responsive ── */
+        @media (max-width: 600px) {
+            header { padding: 24px; }
+            .hero { padding: 80px 24px 48px; }
+            main { padding: 0 24px 80px; }
+            #contact { padding: 60px 24px; }
+            footer { padding: 24px; flex-direction: column; gap: 14px; align-items: flex-start; }
+            #preview { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">Aksel Bernhard</a>
+        <nav class="header-nav">
+            <a href="#work">Arbeid</a>
+            <a href="#contact">Kontakt</a>
+            <a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a>
+        </nav>
+    </header>
+
+    <!-- Hero: random Omen image -->
+    <section class="hero">
+        <img id="hero-img" src="" alt="">
+    </section>
+
+    <!-- Project list -->
+    <main id="work">
+        <ul class="project-list">
+            <li class="project-item">
+                <a href="omen.html" class="project-link"
+                   data-preview="bilder/omen/omen 1.webp">
+                    <span class="project-name">Omen</span>
+                </a>
+            </li>
+            <li class="project-item">
+                <a href="city.html" class="project-link"
+                   data-preview="bilder/city/city 1.webp">
+                    <span class="project-name">City</span>
+                </a>
+            </li>
+            <li class="project-item">
+                <a href="other.html" class="project-link"
+                   data-preview="bilder/other/other 1.webp">
+                    <span class="project-name">Other</span>
+                </a>
+            </li>
+            <li class="project-item">
+                <a href="soft.html" class="project-link"
+                   data-preview="bilder/soft/soft 1.webp">
+                    <span class="project-name">Soft</span>
+                </a>
+            </li>
+            <li class="project-item">
+                <a href="inge-bremnes.html" class="project-link"
+                   data-preview="bilder/inge bremnes/inge bremnes1.webp">
+                    <span class="project-name">Inge Bremnes</span>
+                </a>
+            </li>
+            <li class="project-item">
+                <a href="sivert-rundhovde.html" class="project-link"
+                   data-preview="bilder/sivert rundhovde/sivert rundhovde 1.webp">
+                    <span class="project-name">Sivert Rundhovde</span>
+                </a>
+            </li>
+            <li class="project-item">
+                <a href="visne.html" class="project-link"
+                   data-preview="bilder/visne/visne 1.webp">
+                    <span class="project-name">Visne</span>
+                </a>
+            </li>
+        </ul>
+    </main>
+
+    <section id="contact">
+        <span class="contact-label">Kontakt</span>
+        <h2 class="contact-heading">La oss skape noe sammen.</h2>
+        <p class="contact-body">
+            For forespørsler om oppdrag, utstillinger eller samarbeid —<br>
+            send gjerne en melding, eller skriv direkte til
+            <a href="mailto:din@epost.no">din@epost.no</a>
+        </p>
+        <form class="contact-form" id="contact-form">
+            <div class="form-field">
+                <label for="name">Navn</label>
+                <input type="text" id="name" name="name" placeholder="Ditt navn" required>
+            </div>
+            <div class="form-field">
+                <label for="email">E-post</label>
+                <input type="email" id="email" name="email" placeholder="din@epost.no" required>
+            </div>
+            <div class="form-field">
+                <label for="message">Melding</label>
+                <textarea id="message" name="message" placeholder="Fortell meg mer…" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Send melding</button>
+            <p class="form-success" id="form-success">Melding mottatt — jeg tar kontakt snart.</p>
+        </form>
+    </section>
+
+    <footer>
+        <span class="footer-copy">© 2025 Aksel Bernhard</span>
+        <div class="footer-links">
+            <a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a>
+        </div>
+    </footer>
+
+    <div id="preview"><img src="" alt="" id="preview-img"></div>
+
+    <script>
+        // ── Random hero image from Omen ──
+        const omenImages = [
+            'bilder/omen/omen 1.webp',
+            'bilder/omen/omen 2.webp',
+            'bilder/omen/omen 3.webp',
+            'bilder/omen/omen 4.webp',
+            'bilder/omen/omen 5.webp',
+            'bilder/omen/omen 6.webp',
+        ];
+        const heroImg = document.getElementById('hero-img');
+        const randomSrc = omenImages[Math.floor(Math.random() * omenImages.length)];
+        const preload = new Image();
+        preload.src = randomSrc;
+        preload.onload = () => { heroImg.src = randomSrc; heroImg.classList.add('loaded'); };
+
+        // ── Hover preview ──
+        const preview    = document.getElementById('preview');
+        const previewImg = document.getElementById('preview-img');
+        let mx = 0, my = 0, raf = null;
+
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX; my = e.clientY;
+            if (preview.classList.contains('visible')) {
+                cancelAnimationFrame(raf);
+                raf = requestAnimationFrame(() => {
+                    preview.style.transform = `translate(${mx + 28}px, ${my - 150}px)`;
+                });
+            }
+        });
+
+        document.querySelectorAll('.project-link[data-preview]').forEach(link => {
+            let loaded = false;
+            link.addEventListener('mouseenter', () => {
+                if (!loaded) { previewImg.src = link.dataset.preview; loaded = true; }
+                preview.style.transform = `translate(${mx + 28}px, ${my - 150}px)`;
+                preview.classList.add('visible');
+            });
+            link.addEventListener('mouseleave', () => preview.classList.remove('visible'));
+        });
+
+        // ── Contact form ──
+        document.getElementById('contact-form').addEventListener('submit', e => {
+            e.preventDefault();
+            const btn = e.target.querySelector('.submit-btn');
+            const msg = document.getElementById('form-success');
+            btn.style.display = 'none';
+            msg.style.display = 'block';
+            setTimeout(() => { e.target.reset(); btn.style.display = ''; msg.style.display = 'none'; }, 4000);
+        });
+    </script>
+</body>
+</html>
