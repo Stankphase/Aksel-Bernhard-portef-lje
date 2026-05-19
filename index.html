@@ -6,14 +6,14 @@
     <title>Aksel Bernhard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background: #f5f3ef;
             color: #111;
-            font-family: 'Fraunces', sans-serif;
+            font-family: 'Albert Sans', sans-serif;
             font-weight: 300;
             font-size: 13px;
             letter-spacing: 0.03em;
@@ -34,9 +34,9 @@
             align-items: center;
         }
         .logo {
-            font-family: 'Fraunces', sans-serif;
+            font-family: 'Albert Sans', sans-serif;
             font-weight: 300;
-            font-size: 11px;
+            font-size: 14px;
             letter-spacing: 0.3em;
             text-transform: uppercase;
             color: #111;
@@ -89,7 +89,7 @@
             text-decoration: none;
         }
         .project-name {
-            font-family: 'Fraunces', sans-serif;
+            font-family: 'Albert Sans', sans-serif;
             font-size: clamp(16px, 2vw, 24px);
             font-weight: 300;
             font-style: italic;
@@ -138,7 +138,7 @@
             margin-bottom: 22px;
         }
         .contact-heading {
-            font-family: 'Fraunces', sans-serif;
+            font-family: 'Albert Sans', sans-serif;
             font-size: clamp(26px, 3vw, 38px);
             font-weight: 300;
             font-style: italic;
@@ -179,17 +179,70 @@
         }
         .footer-links a:hover { color: #111; }
 
+        /* ── Burger button (mobile only) ── */
+        .burger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            z-index: 30;
+        }
+        .burger span {
+            display: block;
+            width: 22px;
+            height: 1px;
+            background: #111;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .burger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+        .burger.open span:nth-child(2) { opacity: 0; }
+        .burger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+        /* ── Mobile menu overlay ── */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #f5f3ef;
+            z-index: 25;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 48px 28px;
+            gap: 28px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .mobile-menu.open { opacity: 1; pointer-events: auto; }
+        .mobile-menu a {
+            font-size: 11px;
+            letter-spacing: 0.26em;
+            text-transform: uppercase;
+            color: #b0ab9e;
+            text-decoration: none;
+            transition: color 0.25s;
+        }
+        .mobile-menu a:hover { color: #111; }
+
         /* ── Responsive ── */
         @media (max-width: 600px) {
             header { padding: 20px 24px; }
-            .header-nav { gap: 20px; }
-            .header-nav a:first-child { display: none; }
-            .hero { padding: 68px 20px 36px; }
-            main { padding: 0 20px 64px; flex-direction: column; gap: 32px; }
-            .project-list { max-width: 100%; }
+            .logo { font-size: 11px; }
+            .header-nav { display: none; }
+            .burger { display: flex; }
+            .mobile-menu { display: flex; }
+            .hero { padding: 72px 20px 40px; }
+            .hero img { max-height: 85%; max-width: 90%; }
+            main { padding: 0 24px 64px; flex-direction: column; gap: 0; align-items: stretch; }
+            .project-list { max-width: 100%; width: 100%; }
             .project-preview { display: none; }
-            .project-link { padding: 15px 0; }
-            #contact { padding: 48px 20px; max-width: 100%; }
+            .project-link { padding: 18px 0; }
+            .project-name { font-size: 20px; }
+            #contact { padding: 48px 24px; max-width: 100%; }
             footer { padding: 20px 24px; flex-direction: column; gap: 12px; align-items: flex-start; }
         }
     </style>
@@ -203,7 +256,18 @@
             <a href="#contact">Kontakt</a>
             <a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a>
         </nav>
+        <button class="burger" id="burger" aria-label="Meny">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
     </header>
+
+    <nav class="mobile-menu" id="mobile-menu">
+        <a href="#work">Arbeid</a>
+        <a href="#contact">Kontakt</a>
+        <a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a>
+    </nav>
 
     <!-- Hero: random Omen image -->
     <section class="hero">
@@ -280,6 +344,20 @@
 
 
     <script>
+        // ── Burger menu ──
+        const burger = document.getElementById('burger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        burger.addEventListener('click', () => {
+            const open = mobileMenu.classList.toggle('open');
+            burger.classList.toggle('open', open);
+        });
+        mobileMenu.querySelectorAll('a').forEach(a => {
+            a.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+                burger.classList.remove('open');
+            });
+        });
+
         // ── Page transitions ──
         function navigateTo(href) {
             document.body.style.transition = 'opacity 0.35s ease';
